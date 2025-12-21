@@ -1,0 +1,35 @@
+import express from "express";
+import cors from "cors";
+import { env } from "./config/env";
+import { requestId } from "./middleware/id";
+import { pinoHttp } from "pino-http";
+import { logger } from "./utils/logger";
+import helmet from "helmet";
+import { router } from "./routes";
+import { notFound } from "./middleware/unknown";
+import { errorHandler } from "./middleware/error";
+
+export const app = express();
+
+if (env.TRUST_PROXY) app.set("trust proxy", 1);
+
+const corsOrigin = env.CORS_ORIGIN.split(",").map((origin) => origin.trim()).filter(Boolean);
+
+app.disable("x-powered-by");
+app.use(requestId());
+app.use(pinoHttp({
+    logger,
+    customProps: (req) => ({ requestId: req.id }),
+}));
+app.use(helmet());
+app.use(cors({
+    origin: corsOrigin.length > 1 ? corsOrigin : corsOrigin[0] ?? false,
+    credentials: false,
+    exposedHeaders: ["X-Request-Id"],
+}));
+app.use(express.json({ limit: "1mb" }));
+
+app.use("/api", router);
+
+app.use(notFound);
+app.use(errorHandler);
