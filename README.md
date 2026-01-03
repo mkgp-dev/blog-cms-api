@@ -14,6 +14,10 @@ API-only backend for my personal blog system.
 - Zod validation
 - Pino logging
 
+## Compatible
+- Vercel
+- Railway
+
 ## Setup
 1) Install dependencies
     ```bash
@@ -32,7 +36,6 @@ API-only backend for my personal blog system.
     RATE_LIMIT_WINDOW_MS=900000
     RATE_LIMIT_MAX=100
     AUTH_RATE_LIMIT_MAX=10
-    LOG_LEVEL=info
     TRUST_PROXY=false
     ADMIN_EMAIL=you@example.com
     ADMIN_PASSWORD=change_me
