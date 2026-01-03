@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler } from "../utils/async";
-import { AppError } from "../utils/errors";
-import { verifyToken } from "../utils/jwt";
+import { asyncHandler } from "../utils/async.util";
+import { AppError } from "../utils/errors.util";
+import { verifyToken } from "../utils/jwt.util";
 import z from "zod";
-import { findByID } from "../services/user";
+import { findByID } from "../services/user.service";
 
 export const requireAuth = asyncHandler(async(req: Request, res: Response, next: NextFunction) => {
     const header = req.headers.authorization;

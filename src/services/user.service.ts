@@ -12,16 +12,16 @@ const idSelect = {
     role: true,
 };
 
-export async function findByEmail(email: string) {
+export const findByEmail = async (email: string) => {
     return prisma.user.findUnique({
         where: { email },
         select: emailSelect,
     });
-}
+};
 
-export async function findByID(id: string) {
+export const findByID = async (id: string) => {
     return prisma.user.findUnique({
         where: { id },
         select: idSelect,
     });
-}
+};

@@ -1,8 +1,8 @@
 import { Router } from "express";
-import authRouter from "./auth";
-import publicRouter from "./public";
-import adminRouter from "./admin";
-import { requireAuth } from "../middleware/auth";
+import authRouter from "./auth.route";
+import publicRouter from "./public.route";
+import adminRouter from "./admin.route";
+import { requireAuth } from "../middlewares/auth.middleware";
 
 export const router = Router();
 

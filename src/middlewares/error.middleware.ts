@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { AppError } from "../utils/errors";
+import { AppError } from "../utils/errors.util";
 import z, { ZodError } from "zod";
-import { logger } from "../utils/logger";
+import { logger } from "../utils/logger.util";
 
 export function errorHandler(err: unknown, req: Request, res: Response, next: NextFunction) {
     if (err instanceof AppError) {
-        return res.status(err.status).json({
+        res.status(err.status).json({
             error: {
                 code: err.code,
                 message: err.message,
@@ -18,7 +18,7 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
     if (err instanceof ZodError) {
         const details = z.flattenError(err);
 
-        return res.status(400).json({
+        res.status(400).json({
             error: {
                 code: "invalid_request",
                 message: "Invalid request data",

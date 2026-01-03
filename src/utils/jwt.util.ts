@@ -8,7 +8,7 @@ type Payload = JwtPayload & {
     role: Role;
 };
 
-export function signToken(user: { id: string; role: Role }) {
+export const signToken = (user: { id: string; role: Role }) => {
     const secret = env.JWT_SECRET as Secret;
     const expiresIn = env.JWT_EXPIRES_IN as SignOptions["expiresIn"];
 
@@ -20,11 +20,13 @@ export function signToken(user: { id: string; role: Role }) {
             expiresIn,
         }
     );
-}
+};
 
-export function verifyToken(token: string): Payload {
+export const verifyToken = (token: string): Payload => {
     const payload = verify(token, env.JWT_SECRET);
-    if (typeof payload === "string" || !payload.sub) throw new Error("Invalid token");
+    if (typeof payload === "string" || !("sub" in payload) || !payload.sub) {
+        throw new Error("Invalid token");
+    }
 
     return payload as Payload;
-}
+};
