@@ -13,7 +13,16 @@ export const app = express();
 
 if (env.TRUST_PROXY) app.set("trust proxy", 1);
 
-const corsOrigin = env.CORS_ORIGIN.split(",").map((origin) => origin.trim()).filter(Boolean);
+const normalizeOrigin = (value: string) => value.trim().replace(/\/+$/, "").toLowerCase();
+const allowedOrigins = env.CORS_ORIGIN.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+    .map(normalizeOrigin);
+
+const isAllowedOrigin = (origin?: string | null) => {
+    if (!origin) return true;
+    return allowedOrigins.includes(normalizeOrigin(origin));
+};
 
 app.disable("x-powered-by");
 app.use(requestId());
@@ -23,7 +32,9 @@ app.use(pinoHttp({
 }));
 app.use(helmet());
 app.use(cors({
-    origin: corsOrigin.length > 1 ? corsOrigin : corsOrigin[0] ?? false,
+    origin: (origin, callback) => {
+        callback(null, isAllowedOrigin(origin));
+    },
     credentials: false,
     exposedHeaders: ["X-Request-Id"],
 }));
