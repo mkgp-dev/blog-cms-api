@@ -35,7 +35,7 @@ const deleteSelect = {
     id: true,
 };
 
-export async function listPublicPost({ page, pageSize }: Pagination) {
+export const listPublicPost = async ({ page, pageSize }: Pagination) => {
     const skip = (page - 1) * pageSize;
 
     const [items, total] = await prisma.$transaction([
@@ -46,20 +46,20 @@ export async function listPublicPost({ page, pageSize }: Pagination) {
             take: pageSize,
             select: publicSelect,
         }),
-        prisma.post.count({ where: { published: true } })
+        prisma.post.count({ where: { published: true } }),
     ]);
 
     return { items, total };
-}
+};
 
-export async function getPublicPostById(id: string) {
+export const getPublicPostById = async (id: string) => {
     return prisma.post.findFirst({
         where: { id, published: true },
         select: publicSelect,
     });
-}
+};
 
-export async function listAdminPost({ page, pageSize, authorId }: Pagination & { authorId: string }) {
+export const listAdminPost = async ({ page, pageSize, authorId }: Pagination & { authorId: string }) => {
     const skip = (page - 1) * pageSize;
 
     const [items, total] = await prisma.$transaction([
@@ -70,20 +70,20 @@ export async function listAdminPost({ page, pageSize, authorId }: Pagination & {
             take: pageSize,
             select: adminSelect,
         }),
-        prisma.post.count({ where: { authorId } })
+        prisma.post.count({ where: { authorId } }),
     ]);
 
     return { items, total };
-}
+};
 
-export async function getAdminPostById(id: string, authorId: string) {
+export const getAdminPostById = async (id: string, authorId: string) => {
     return prisma.post.findFirst({
         where: { id, authorId },
         select: adminSelect,
     });
-}
+};
 
-export async function createPost(input: { title: string, content: string, published: boolean, authorId: string }) {
+export const createPost = async (input: { title: string; content: string; published: boolean; authorId: string }) => {
     const publishedAt = input.published ? new Date() : null;
 
     return prisma.post.create({
@@ -96,9 +96,9 @@ export async function createPost(input: { title: string, content: string, publis
         },
         select: adminSelect,
     });
-}
+};
 
-export async function updatePost(id: string, authorId: string, input: { title?: string, content?: string, published?: boolean }) {
+export const updatePost = async (id: string, authorId: string, input: { title?: string; content?: string; published?: boolean }) => {
     const dataExist = await prisma.post.findFirst({
         where: { id, authorId },
         select: updateSelect,
@@ -109,10 +109,16 @@ export async function updatePost(id: string, authorId: string, input: { title?: 
     const data: Prisma.PostUpdateInput = {
         ...(input.title !== undefined ? { title: input.title } : {}),
         ...(input.content !== undefined ? { content: input.content } : {}),
-        ...(input.published !== undefined ? {
-            published: input.published,
-            publishedAt: input.published ? (dataExist.published ? undefined : new Date()) : null,
-        } : {}),
+        ...(input.published !== undefined
+            ? {
+                published: input.published,
+                publishedAt: input.published
+                    ? dataExist.published
+                        ? undefined
+                        : new Date()
+                    : null,
+            }
+            : {}),
     };
 
     return prisma.post.update({
@@ -120,9 +126,9 @@ export async function updatePost(id: string, authorId: string, input: { title?: 
         data,
         select: adminSelect,
     });
-}
+};
 
-export async function deletePost(id: string, authorId: string) {
+export const deletePost = async (id: string, authorId: string) => {
     const dataExist = await prisma.post.findFirst({
         where: { id, authorId },
         select: deleteSelect,
@@ -134,4 +140,4 @@ export async function deletePost(id: string, authorId: string) {
         where: { id },
         select: adminSelect,
     });
-}
+};

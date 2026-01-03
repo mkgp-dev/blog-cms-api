@@ -62,20 +62,21 @@ const commentSelect = {
     }
 };
 
-export async function searchPost(input: PostSearchInput) {
+export const searchPost = async (input: PostSearchInput) => {
     const skip = (input.page - 1) * input.pageSize;
 
     const where: Prisma.PostWhereInput = {
         authorId: input.authorId,
         ...(input.q ? { title: { contains: input.q, mode: "insensitive" } } : {}),
         ...(input.published !== undefined ? { published: input.published } : {}),
-        ...((input.dateFrom || input.dateTo)
+        ...(input.dateFrom || input.dateTo
             ? {
                 createdAt: {
                     ...(input.dateFrom ? { gte: input.dateFrom } : {}),
                     ...(input.dateTo ? { lte: input.dateTo } : {}),
-                }
-            } : {}),
+                },
+            }
+            : {}),
     };
 
     const [items, total] = await prisma.$transaction([
@@ -86,13 +87,13 @@ export async function searchPost(input: PostSearchInput) {
             take: input.pageSize,
             select: postSelect,
         }),
-        prisma.post.count({ where })
+        prisma.post.count({ where }),
     ]);
 
     return { items, total };
-}
+};
 
-export async function searchComment(input: CommentSearchInput) {
+export const searchComment = async (input: CommentSearchInput) => {
     const skip = (input.page - 1) * input.pageSize;
 
     const where: Prisma.CommentWhereInput = {
@@ -102,15 +103,17 @@ export async function searchComment(input: CommentSearchInput) {
                 OR: [
                     { username: { contains: input.q, mode: "insensitive" } },
                     { content: { contains: input.q, mode: "insensitive" } },
-                ]
-            } : {}),
-        ...((input.dateFrom || input.dateTo)
+                ],
+            }
+            : {}),
+        ...(input.dateFrom || input.dateTo
             ? {
                 createdAt: {
                     ...(input.dateFrom ? { gte: input.dateFrom } : {}),
                     ...(input.dateTo ? { lte: input.dateTo } : {}),
-                }
-            } : {}),
+                },
+            }
+            : {}),
     };
 
     const [items, total] = await prisma.$transaction([
@@ -121,8 +124,8 @@ export async function searchComment(input: CommentSearchInput) {
             take: input.pageSize,
             select: commentSelect,
         }),
-        prisma.comment.count({ where })
+        prisma.comment.count({ where }),
     ]);
 
     return { items, total };
-}
+};

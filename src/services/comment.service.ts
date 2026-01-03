@@ -31,7 +31,7 @@ const adminSelect = {
     },
 };
 
-export async function listPublicComment(postId: string, { page, pageSize }: Pagination) {
+export const listPublicComment = async (postId: string, { page, pageSize }: Pagination) => {
     const post = await prisma.post.findFirst({
         where: { id: postId, published: true },
         select: postSelect,
@@ -49,13 +49,13 @@ export async function listPublicComment(postId: string, { page, pageSize }: Pagi
             take: pageSize,
             select: publicSelect,
         }),
-        prisma.comment.count({ where: { postId } })
+        prisma.comment.count({ where: { postId } }),
     ]);
 
     return { items, total };
-}
+};
 
-export async function listAdminComment({ page, pageSize, authorId }: Pagination & { authorId: string }) {
+export const listAdminComment = async ({ page, pageSize, authorId }: Pagination & { authorId: string }) => {
     const skip = (page - 1) * pageSize;
 
     const [items, total] = await prisma.$transaction([
@@ -66,13 +66,13 @@ export async function listAdminComment({ page, pageSize, authorId }: Pagination 
             take: pageSize,
             select: adminSelect,
         }),
-        prisma.comment.count({ where: { post: { authorId } } })
+        prisma.comment.count({ where: { post: { authorId } } }),
     ]);
 
     return { items, total };
-}
+};
 
-export async function createComment(postId: string, input: { username: string, content: string }) {
+export const createComment = async (postId: string, input: { username: string; content: string }) => {
     const post = await prisma.post.findFirst({
         where: { id: postId, published: true },
         select: postSelect,
@@ -86,13 +86,13 @@ export async function createComment(postId: string, input: { username: string, c
             username: input.username,
             content: input.content,
         },
-        select: publicSelect
+        select: publicSelect,
     });
-}
+};
 
-export async function deleteComment(id: string, authorId: string) {
+export const deleteComment = async (id: string, authorId: string) => {
     const post = await prisma.comment.findFirst({
-        where: { id, post: { authorId }},
+        where: { id, post: { authorId } },
         select: postSelect,
     });
 
@@ -102,4 +102,4 @@ export async function deleteComment(id: string, authorId: string) {
         where: { id },
         select: adminSelect,
     });
-}
+};

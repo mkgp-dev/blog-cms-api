@@ -1,10 +1,10 @@
 import z from "zod";
-import { asyncHandler } from "../utils/async";
+import { asyncHandler } from "../utils/async.util";
 import { Request, Response } from "express";
-import { findByEmail } from "../services/user";
-import { AppError } from "../utils/errors";
-import { verifyPassword } from "../utils/password";
-import { signToken } from "../utils/jwt";
+import { findByEmail } from "../services/user.service";
+import { AppError } from "../utils/errors.util";
+import { verifyPassword } from "../utils/password.util";
+import { signToken } from "../utils/jwt.util";
 
 const loginSchema = z.object({
     email: z.email(),

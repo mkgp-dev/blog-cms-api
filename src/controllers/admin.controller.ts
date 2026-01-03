@@ -1,11 +1,11 @@
 import z from "zod";
-import { asyncHandler } from "../utils/async";
+import { asyncHandler } from "../utils/async.util";
 import { Request, Response } from "express";
-import { createPost, deletePost, getAdminPostById, listAdminPost, updatePost } from "../services/post";
-import { AppError } from "../utils/errors";
-import { deleteComment, listAdminComment } from "../services/comment";
-import { parseDate } from "../utils/date";
-import { searchComment, searchPost } from "../services/search";
+import { createPost, deletePost, getAdminPostById, listAdminPost, updatePost } from "../services/post.service";
+import { AppError } from "../utils/errors.util";
+import { deleteComment, listAdminComment } from "../services/comment.service";
+import { parseDate } from "../utils/date.util";
+import { searchComment, searchPost } from "../services/search.service";
 
 const paginationSchema = z.object({
     page: z.coerce.number().int().positive().default(1),
@@ -99,7 +99,7 @@ export const deleteAdminPost = asyncHandler(async (req: Request, res: Response) 
     const deleteSelectedPost = await deletePost(id, authorId);
     if (!deleteSelectedPost) throw new AppError(404, "not_found", "Post not found");
 
-    res.status(200).json({ data: deleteSelectedPost });
+    res.status(204).send();
 });
 
 export const listAllComment = asyncHandler(async (req: Request, res: Response) => {
@@ -121,7 +121,7 @@ export const deleteAdminComment = asyncHandler(async (req: Request, res: Respons
     const deleteSelectedComment = await deleteComment(id, authorId);
     if (!deleteSelectedComment) throw new AppError(404, "not_found", "Comment not found");
 
-    res.status(200).json({ data: deleteSelectedComment });
+    res.status(204).send();
 });
 
 export const searchAdminPost = asyncHandler(async (req: Request, res: Response) => {

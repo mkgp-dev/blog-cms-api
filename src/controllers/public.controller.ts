@@ -1,10 +1,10 @@
 import z from "zod";
-import { asyncHandler } from "../utils/async";
+import { asyncHandler } from "../utils/async.util";
 import { Request, Response } from "express";
-import { getPublicPostById, listPublicPost } from "../services/post";
-import { AppError } from "../utils/errors";
-import { createComment, listPublicComment } from "../services/comment";
-import { CENSOR_TYPE, commentFilter, usernameFilter } from "../utils/profanity";
+import { getPublicPostById, listPublicPost } from "../services/post.service";
+import { AppError } from "../utils/errors.util";
+import { createComment, listPublicComment } from "../services/comment.service";
+import { CENSOR_TYPE, commentFilter, usernameFilter } from "../utils/profanity.util";
 
 const paginationSchema = z.object({
     page: z.coerce.number().int().positive().default(1),

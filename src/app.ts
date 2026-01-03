@@ -1,13 +1,13 @@
 import express from "express";
 import cors from "cors";
 import { env } from "./config/env";
-import { requestId } from "./middleware/id";
+import { requestId } from "./middlewares/id.middleware";
 import { pinoHttp } from "pino-http";
-import { logger } from "./utils/logger";
+import { logger } from "./utils/logger.util";
 import helmet from "helmet";
 import { router } from "./routes";
-import { notFound } from "./middleware/unknown";
-import { errorHandler } from "./middleware/error";
+import { notFound } from "./middlewares/unknown.middleware";
+import { errorHandler } from "./middlewares/error.middleware";
 
 export const app = express();
 
