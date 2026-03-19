@@ -2,6 +2,9 @@
 
 API-only backend for my personal blog system.
 
+> [!IMPORTANT]
+> This project is now **discontinued** because I have created my own private backend. It remains as a reference for the lessons I learned from The Odin Project, and it will now be kept as an archive repository since I will no longer be updating it.
+
 ## Features
 - Public read-only access to published posts and comments.
 - Admin authoring, publishing, and moderation via JWT.
